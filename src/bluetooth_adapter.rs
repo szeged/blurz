@@ -1,6 +1,6 @@
 use bluetooth_device::BluetoothDevice;
 use bluetooth_utils;
-use dbus::MessageItem;
+use dbus::{Path,MessageItem};
 use rustc_serialize::hex::FromHex;
 use std::error::Error;
 
@@ -227,6 +227,8 @@ impl BluetoothAdapter {
 
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/adapter-api.txt#n40
     pub fn remove_device(&self, device: String) -> Result<(), Box<Error>> {
-        self.call_method("RemoveDevice", Some([device.into()]))
+        let path:Path=device.into();
+        let message_item=MessageItem::ObjectPath(path);
+        self.call_method("RemoveDevice", Some([message_item]))
     }
 }
