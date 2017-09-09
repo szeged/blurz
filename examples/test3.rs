@@ -9,28 +9,33 @@ use blurz::bluetooth_device::BluetoothDevice as Device;
 use blurz::bluetooth_discovery_session::BluetoothDiscoverySession as DiscoverySession;
 
 fn test3() -> Result<(), Box<Error>> {
-    let adapter: Adapter = try!(Adapter::init());
-    try!(adapter.set_powered(true));
+    let adapter: Adapter = Adapter::init()?;
+    adapter.set_powered(true)?;
     loop {
-        let session = try!(DiscoverySession::create_session(adapter.get_id()));
+        let session = DiscoverySession::create_session(adapter.get_id())?;
         thread::sleep(Duration::from_millis(200));
-        try!(session.start_discovery());
+        session.start_discovery()?;
         thread::sleep(Duration::from_millis(800));
-        let devices = try!(adapter.get_device_list());
+        let devices = adapter.get_device_list()?;
 
         println!("{} device(s) found", devices.len());
         'device_loop: for d in devices {
             let device = Device::new(d.clone());
-            println!("{} {:?} {:?}", device.get_id(), device.get_address(),device.get_rssi());
-            try!(adapter.remove_device(device.get_id()));
+            println!(
+                "{} {:?} {:?}",
+                device.get_id(),
+                device.get_address(),
+                device.get_rssi()
+            );
+            adapter.remove_device(device.get_id())?;
         }
-        try!(session.stop_discovery());
+        session.stop_discovery()?;
     }
 }
 
 fn main() {
     match test3() {
-       Ok(_) => (),
-       Err(e) => println!("{:?}", e),
-   }
+        Ok(_) => (),
+        Err(e) => println!("{:?}", e),
+    }
 }

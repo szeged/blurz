@@ -1,6 +1,9 @@
 extern crate dbus;
 extern crate hex;
 
+#[macro_use]
+extern crate error_chain;
+
 pub use bluetooth_adapter::BluetoothAdapter;
 pub use bluetooth_device::BluetoothDevice;
 pub use bluetooth_gatt_characteristic::BluetoothGATTCharacteristic;
@@ -15,3 +18,4 @@ pub mod bluetooth_gatt_descriptor;
 pub mod bluetooth_gatt_service;
 pub mod bluetooth_discovery_session;
 mod bluetooth_utils;
+mod errors;
