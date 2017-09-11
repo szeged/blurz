@@ -3,7 +3,6 @@ extern crate blurz;
 static BATTERY_SERVICE_UUID: &'static str = "0000180f-0000-1000-8000-00805f9b34fb";
 static COLOR_PICKER_SERVICE_UUID: &'static str = "00001812-0000-1000-8000-00805f9b34fb";
 
-use std::error::Error;
 use std::time::Duration;
 use std::thread;
 
@@ -13,8 +12,9 @@ use blurz::bluetooth_gatt_service::BluetoothGATTService as Service;
 use blurz::bluetooth_gatt_characteristic::BluetoothGATTCharacteristic as Characteristic;
 use blurz::bluetooth_gatt_descriptor::BluetoothGATTDescriptor as Descriptor;
 use blurz::bluetooth_discovery_session::BluetoothDiscoverySession as DiscoverySession;
+use blurz::errors::*;
 
-fn test2() -> Result<(), Box<Error>> {
+fn test2() -> Result<()> {
     let adapter: Adapter = Adapter::init()?;
     let session = DiscoverySession::create_session(adapter.get_id())?;
     session.start_discovery()?;
@@ -29,7 +29,7 @@ fn test2() -> Result<(), Box<Error>> {
     session.stop_discovery()?;
     let devices = adapter.get_device_list()?;
     if devices.is_empty() {
-        return Err(Box::from("No device found"));
+        return Err(Error::from("No device found"));
     }
     println!("{} device(s) found", devices.len());
     let mut device: Device = Device::new("".to_string());
@@ -61,7 +61,7 @@ fn test2() -> Result<(), Box<Error>> {
     }
     adapter.stop_discovery().ok();
     if !device.is_connected()? {
-        return Err(Box::from("No connectable device found"));
+        return Err(Error::from("No connectable device found"));
     }
     let services = device.get_gatt_services()?;
     for service in services {

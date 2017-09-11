@@ -17,5 +17,5 @@ pub mod bluetooth_gatt_characteristic;
 pub mod bluetooth_gatt_descriptor;
 pub mod bluetooth_gatt_service;
 pub mod bluetooth_discovery_session;
+pub mod errors;
 mod bluetooth_utils;
-mod errors;
