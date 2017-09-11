@@ -8,7 +8,9 @@ Examples
 ========
 This example show how to get the first available bluetooth device.
 ``` rust
-let adapter: BluetoothAdapter = BluetoothAdapter::init().unwrap();
-let device: BluetoothDevice = adapter.get_first_device().unwrap();
+use blurz::{Adapter, Device};
+
+let adapter: Adapter = Adapter::init().unwrap();
+let device: Device = adapter.get_first_device().unwrap();
 println!("{:?}", device);
 ```
