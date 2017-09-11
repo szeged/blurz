@@ -3,9 +3,7 @@ extern crate blurz;
 use std::time::Duration;
 use std::thread;
 
-use blurz::bluetooth_adapter::BluetoothAdapter as Adapter;
-use blurz::bluetooth_device::BluetoothDevice as Device;
-use blurz::bluetooth_discovery_session::BluetoothDiscoverySession as DiscoverySession;
+use blurz::{Adapter, Device, DiscoverySession};
 use blurz::errors::*;
 
 fn test3() -> Result<()> {

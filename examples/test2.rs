@@ -6,12 +6,7 @@ static COLOR_PICKER_SERVICE_UUID: &'static str = "00001812-0000-1000-8000-00805f
 use std::time::Duration;
 use std::thread;
 
-use blurz::bluetooth_adapter::BluetoothAdapter as Adapter;
-use blurz::bluetooth_device::BluetoothDevice as Device;
-use blurz::bluetooth_gatt_service::BluetoothGATTService as Service;
-use blurz::bluetooth_gatt_characteristic::BluetoothGATTCharacteristic as Characteristic;
-use blurz::bluetooth_gatt_descriptor::BluetoothGATTDescriptor as Descriptor;
-use blurz::bluetooth_discovery_session::BluetoothDiscoverySession as DiscoverySession;
+use blurz::{Adapter, Device, GATTService, GATTCharacteristic, GATTDescriptor, DiscoverySession};
 use blurz::errors::*;
 
 fn test2() -> Result<()> {
@@ -65,16 +60,16 @@ fn test2() -> Result<()> {
     }
     let services = device.get_gatt_services()?;
     for service in services {
-        let s = Service::new(service.clone());
+        let s = GATTService::new(service.clone());
         println!("{:?}", s);
         let characteristics = s.get_gatt_characteristics()?;
         for characteristic in characteristics {
-            let c = Characteristic::new(characteristic.clone());
+            let c = GATTCharacteristic::new(characteristic.clone());
             println!("{:?}", c);
             println!("Value: {:?}", c.read_value(None));
             let descriptors = c.get_gatt_descriptors()?;
             for descriptor in descriptors {
-                let d = Descriptor::new(descriptor.clone());
+                let d = GATTDescriptor::new(descriptor.clone());
                 println!("{:?}", d);
                 println!("Value: {:?}", d.read_value(None));
             }
