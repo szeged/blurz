@@ -6,7 +6,7 @@ Required bluez version: 5.44
 
 Requirements
 ========
-ubuntu - `sudo apt install liblibdbus-1-dev`
+ubuntu - `sudo apt install libdbus-1-dev`
 
 Examples
 ========
