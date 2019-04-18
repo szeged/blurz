@@ -8,7 +8,7 @@ static CHARACTERISTIC_INTERFACE: &'static str = "org.bluez.GattCharacteristic1";
 static DESCRIPTOR_INTERFACE: &'static str = "org.bluez.GattDescriptor1";
 static SERVICE_NAME: &'static str = "org.bluez";
 
-fn get_managed_objects(c: &Connection) -> Result<Vec<MessageItem>, Box<Error>> {
+fn get_managed_objects(c: &Connection) -> Result<Vec<MessageItem>, Box<Error + Send + Sync>> {
     let m = try!(Message::new_method_call(
         SERVICE_NAME,
         "/",
@@ -19,7 +19,7 @@ fn get_managed_objects(c: &Connection) -> Result<Vec<MessageItem>, Box<Error>> {
     Ok(r.get_items())
 }
 
-pub fn get_adapters(c: &Connection) -> Result<Vec<String>, Box<Error>> {
+pub fn get_adapters(c: &Connection) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     let mut adapters: Vec<String> = Vec::new();
     let objects: Vec<MessageItem> = try!(get_managed_objects(&c));
     let z: &[MessageItem] = objects.get(0).unwrap().inner().unwrap();
@@ -38,22 +38,22 @@ pub fn get_adapters(c: &Connection) -> Result<Vec<String>, Box<Error>> {
     Ok(adapters)
 }
 
-pub fn list_devices(c: &Connection, adapter_path: &String) -> Result<Vec<String>, Box<Error>> {
+pub fn list_devices(c: &Connection, adapter_path: &String) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     list_item(c, DEVICE_INTERFACE, adapter_path, "Adapter")
 }
 
-pub fn list_services(c: &Connection, device_path: &String) -> Result<Vec<String>, Box<Error>> {
+pub fn list_services(c: &Connection, device_path: &String) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     list_item(c, SERVICE_INTERFACE, device_path, "Device")
 }
 
 pub fn list_characteristics(
     c: &Connection,
     device_path: &String,
-) -> Result<Vec<String>, Box<Error>> {
+) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     list_item(c, CHARACTERISTIC_INTERFACE, device_path, "Service")
 }
 
-pub fn list_descriptors(c: &Connection, device_path: &String) -> Result<Vec<String>, Box<Error>> {
+pub fn list_descriptors(c: &Connection, device_path: &String) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     list_item(c, DESCRIPTOR_INTERFACE, device_path, "Characteristic")
 }
 
@@ -62,7 +62,7 @@ fn list_item(
     item_interface: &str,
     item_path: &str,
     item_property: &str,
-) -> Result<Vec<String>, Box<Error>> {
+) -> Result<Vec<String>, Box<Error + Send + Sync>> {
     let mut v: Vec<String> = Vec::new();
     let objects: Vec<MessageItem> = try!(get_managed_objects(&c));
     let z: &[MessageItem] = objects.get(0).unwrap().inner().unwrap();
@@ -90,7 +90,7 @@ pub fn get_property(
     interface: &str,
     object_path: &str,
     prop: &str,
-) -> Result<MessageItem, Box<Error>> {
+) -> Result<MessageItem, Box<Error + Send + Sync>> {
     let p = Props::new(&c, SERVICE_NAME, object_path, interface, 1000);
     Ok(try!(p.get(prop)).clone())
 }
@@ -102,7 +102,7 @@ pub fn set_property<T>(
     prop: &str,
     value: T,
     timeout_ms: i32,
-) -> Result<(), Box<Error>>
+) -> Result<(), Box<Error + Send + Sync>>
 where
     T: Into<MessageItem>,
 {
@@ -117,7 +117,7 @@ pub fn call_method(
     method: &str,
     param: Option<&[MessageItem]>,
     timeout_ms: i32,
-) -> Result<(), Box<Error>> {
+) -> Result<(), Box<Error + Send + Sync>> {
     let mut m = try!(Message::new_method_call(
         SERVICE_NAME,
         object_path,

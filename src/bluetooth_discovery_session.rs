@@ -14,7 +14,7 @@ impl<'a> BluetoothDiscoverySession<'a> {
     pub fn create_session(
         session: &'a BluetoothSession,
         adapter: String,
-    ) -> Result<BluetoothDiscoverySession, Box<Error>> {
+    ) -> Result<BluetoothDiscoverySession, Box<Error + Send + Sync>> {
         Ok(BluetoothDiscoverySession::new(session, adapter))
     }
 
@@ -25,7 +25,7 @@ impl<'a> BluetoothDiscoverySession<'a> {
         }
     }
 
-    fn call_method(&self, method: &str, param: Option<[MessageItem; 1]>) -> Result<(), Box<Error>> {
+    fn call_method(&self, method: &str, param: Option<[MessageItem; 1]>) -> Result<(), Box<Error + Send + Sync>> {
         let mut m = try!(Message::new_method_call(
             SERVICE_NAME,
             &self.adapter,
@@ -44,11 +44,11 @@ impl<'a> BluetoothDiscoverySession<'a> {
         Ok(())
     }
 
-    pub fn start_discovery(&self) -> Result<(), Box<Error>> {
+    pub fn start_discovery(&self) -> Result<(), Box<Error + Send + Sync>> {
         self.call_method("StartDiscovery", None)
     }
 
-    pub fn stop_discovery(&self) -> Result<(), Box<Error>> {
+    pub fn stop_discovery(&self) -> Result<(), Box<Error + Send + Sync>> {
         self.call_method("StopDiscovery", None)
     }
 
@@ -57,7 +57,7 @@ impl<'a> BluetoothDiscoverySession<'a> {
         uuids: Vec<String>,
         rssi: Option<i16>,
         pathloss: Option<u16>,
-    ) -> Result<(), Box<Error>> {
+    ) -> Result<(), Box<Error + Send + Sync>> {
         let uuids = {
             let mut res: Vec<MessageItem> = Vec::new();
             for u in uuids {
