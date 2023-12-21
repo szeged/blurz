@@ -281,7 +281,7 @@ impl<'a> BluetoothDevice<'a> {
 
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/device-api.txt#n29
     pub fn disconnect(&self) -> Result<(), Box<Error>> {
-        self.call_method("Disconnect", None, 5000)
+        self.call_method("Disconnect", None, 10000)
     }
 
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/device-api.txt#n43
